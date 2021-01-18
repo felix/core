@@ -26,7 +26,6 @@ import "github.com/miracl/core/go/core"
 
 //import "fmt"
 
-
 type BIG struct {
 	w [NLEN]Chunk
 }
@@ -279,11 +278,11 @@ func NewBIGdcopy(x *DBIG) *BIG {
 
 /* test for zero */
 func (r *BIG) iszilch() bool {
-	d:=Chunk(0)
+	d := Chunk(0)
 	for i := 0; i < NLEN; i++ {
-		d|=r.w[i]
+		d |= r.w[i]
 	}
-	return (1 & ((d-1)>>BASEBITS)) != 0
+	return (1 & ((d - 1) >> BASEBITS)) != 0
 }
 
 /* set to zero */
@@ -295,11 +294,11 @@ func (r *BIG) zero() {
 
 /* Test for equal to one */
 func (r *BIG) isunity() bool {
-	d:=Chunk(0)
+	d := Chunk(0)
 	for i := 1; i < NLEN; i++ {
-		d|=r.w[i]
+		d |= r.w[i]
 	}
-	return (1 & ((d-1)>>BASEBITS) & (((r.w[0]^1)-1)>>BASEBITS)) != 0
+	return (1 & ((d - 1) >> BASEBITS) & (((r.w[0] ^ 1) - 1) >> BASEBITS)) != 0
 }
 
 /* set to one */
@@ -575,13 +574,13 @@ func smul(a *BIG, b *BIG) *BIG {
 
 /* Compare a and b, return 0 if a==b, -1 if a<b, +1 if a>b. Inputs must be normalised */
 func Comp(a *BIG, b *BIG) int {
-	gt:=Chunk(0)
-	eq:=Chunk(1)
+	gt := Chunk(0)
+	eq := Chunk(1)
 	for i := NLEN - 1; i >= 0; i-- {
-		gt |= ((b.w[i]-a.w[i]) >> BASEBITS) & eq
-		eq &= ((b.w[i]^a.w[i])-1) >> BASEBITS
+		gt |= ((b.w[i] - a.w[i]) >> BASEBITS) & eq
+		eq &= ((b.w[i] ^ a.w[i]) - 1) >> BASEBITS
 	}
-	return int(gt+gt+eq-1)
+	return int(gt + gt + eq - 1)
 }
 
 /* return parity */
@@ -801,7 +800,8 @@ func Modadd(a1, b1, m *BIG) *BIG {
 	b := NewBIGcopy(b1)
 	a.Mod(m)
 	b.Mod(m)
-	a.add(b); a.norm()
+	a.add(b)
+	a.norm()
 	a.Mod(m)
 	return a
 }
@@ -866,7 +866,7 @@ func (r *BIG) Invmodp(p *BIG) {
 			u.fshr(1)
 			t.copy(x1)
 			t.add(p)
-			x1.cmove(t,x1.parity())
+			x1.cmove(t, x1.parity())
 			x1.norm()
 			x1.fshr(1)
 		}
@@ -874,7 +874,7 @@ func (r *BIG) Invmodp(p *BIG) {
 			v.fshr(1)
 			t.copy(x2)
 			t.add(p)
-			x2.cmove(t,x2.parity())
+			x2.cmove(t, x2.parity())
 			x2.norm()
 			x2.fshr(1)
 		}
@@ -883,7 +883,7 @@ func (r *BIG) Invmodp(p *BIG) {
 			u.norm()
 			t.copy(x1)
 			t.add(p)
-			x1.cmove(t,(Comp(x1,x2)>>1)&1)
+			x1.cmove(t, (Comp(x1, x2)>>1)&1)
 			x1.sub(x2)
 			x1.norm()
 		} else {
@@ -891,13 +891,13 @@ func (r *BIG) Invmodp(p *BIG) {
 			v.norm()
 			t.copy(x2)
 			t.add(p)
-			x2.cmove(t,(Comp(x2,x1)>>1)&1)
+			x2.cmove(t, (Comp(x2, x1)>>1)&1)
 			x2.sub(x1)
 			x2.norm()
 		}
 	}
 	r.copy(x1)
-	r.cmove(x2,Comp(u,one)&1)
+	r.cmove(x2, Comp(u, one)&1)
 }
 
 /* return this^e mod m */
